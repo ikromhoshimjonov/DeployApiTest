@@ -8,7 +8,7 @@ from apps.serializers import CategoryModelSerializer, ProductModelSerializer
 class CategoryViewSet(ModelViewSet):
     queryset = Categories.objects.all()
     serializer_class = CategoryModelSerializer
-    
+
 @extend_schema(tags=["product"])
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
