@@ -20,7 +20,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd /var/www/ikrom
+            cd /var/www/ikrom/DeployApiTest
             git fetch origin
             git reset --hard origin/main
             git remote remove origin
