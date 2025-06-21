@@ -1,0 +1,35 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Production via SSH
+        if: github.ref == 'refs/heads/main'
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            cd /var/www/ikrom
+            git fetch origin
+            git reset --hard origin/main
+            git remote remove origin
+            git remote add origin https://github.com/ikromhoshimjonov/DeployApiTest.git
+            git pull origin main  
+            source .venv/bin/activate
+            pip install -r requirements.txt
+            make mig
+            sudo systemctl restart ikrom_test.service
+            sudo systemctl enable ikrom_test.service
+            sudo systemctl enable nginx.service
+            sudo systemctl restart nginx.service
